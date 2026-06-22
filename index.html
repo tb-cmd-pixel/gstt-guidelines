@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GSTT Guidelines">
+<meta name="theme-color" content="#0d3d56">
+<title>GSTT Anaesthetics Guidelines</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --navy: #0d3d56;
+  --teal: #1a6b8a;
+  --teal-light: #e8f4fb;
+  --teal-mid: #bdd8e8;
+  --surface: #f0f5f9;
+  --card: #ffffff;
+  --text: #1a2a35;
+  --text-mid: #4a6070;
+  --text-soft: #7a9aaa;
+  --border: #dde8f0;
+  --red: #c62828;
+  --red-light: #fdecea;
+  --amber: #e65100;
+  --amber-light: #fff8e1;
+  --green: #2e7d4f;
+  --green-light: #e8f5ee;
+  --highlight: #fff176;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--surface);
+  color: var(--text);
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HEADER ── */
+.header {
+  background: linear-gradient(160deg, var(--navy) 0%, var(--teal) 100%);
+  padding: calc(12px + var(--safe-top)) 16px 14px;
+  position: sticky; top: 0; z-index: 200;
+}
+.header-title { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+.header-sub { font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.07em; }
+.back-btn {
+  background: none; border: none; color: rgba(255,255,255,0.85);
+  font-size: 14px; font-weight: 600; cursor: pointer; padding: 0;
+  display: flex; align-items: center; gap: 4px; margin-bottom: 8px;
+}
+
+/* ── NAV ── */
+.nav {
+  display: flex; background: var(--card);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 64px; z-index: 199;
+}
+.nav-btn {
+  flex: 1; border: none; background: none; cursor: pointer;
+  padding: 8px 2px 7px; font-size: 9px; font-weight: 600;
+  color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.05em;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.nav-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+/* ── SYNC BAR ── */
+.sync-bar {
+  background: var(--navy); color: rgba(255,255,255,0.6);
+  font-size: 10px; padding: 3px 12px; text-align: right; letter-spacing: 0.03em;
+}
+.sync-bar.error { background: var(--red); color: #fff; }
+
+/* ── SEARCH ── */
+.search-wrap {
+  background: var(--card); border-bottom: 1px solid var(--border);
+  padding: 10px 12px; position: sticky; top: 108px; z-index: 198;
+}
+.search-row { display: flex; gap: 8px; align-items: center; }
+.search-input {
+  flex: 1; padding: 10px 12px 10px 38px;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  font-size: 15px; background: var(--surface); outline: none; color: var(--text);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17' viewBox='0 0 24 24' fill='none' stroke='%237a9aaa' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: 11px center;
+  transition: border-color .15s;
+}
+.search-input:focus { border-color: var(--teal); background: #fff; }
+.search-clear {
+  background: var(--text-soft); color: #fff; border: none; border-radius: 50%;
+  width: 22px; height: 22px; font-size: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.filter-row {
+  display: flex; gap: 6px; overflow-x: auto; padding-top: 8px;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-chip {
+  flex-shrink: 0; padding: 5px 11px; border-radius: 20px; font-size: 11px;
+  font-weight: 600; border: 1.5px solid var(--border); background: var(--surface);
+  color: var(--text-mid); cursor: pointer; white-space: nowrap; transition: all .15s;
+}
+.filter-chip.active {
+  color: #fff; border-color: transparent;
+}
+.search-meta {
+  font-size: 11px; color: var(--text-soft); padding-top: 6px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.search-meta a { color: var(--teal); cursor: pointer; text-decoration: none; font-weight: 600; }
+
+/* ── ALERT BANNER ── */
+.alert-banner { margin: 10px 12px 0; border-radius: 10px; padding: 11px 14px; cursor: pointer; }
+.alert-banner.overdue { background: var(--red-light); border: 1.5px solid #ef9a9a; }
+.alert-banner.soon    { background: var(--amber-light); border: 1.5px solid #ffe082; }
+.alert-title { font-weight: 700; font-size: 13px; }
+.alert-sub   { font-size: 11px; color: var(--text-mid); margin-top: 2px; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 10px; font-weight: 700; color: var(--text-soft);
+  text-transform: uppercase; letter-spacing: 0.08em; padding: 14px 12px 6px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.section-label a { color: var(--teal); font-weight: 400; cursor: pointer; text-decoration: none; }
+
+/* ── CATEGORY GRID ── */
+.cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; }
+.cat-card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 11px; padding: 11px 12px; cursor: pointer;
+  display: flex; align-items: center; gap: 9px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all .15s;
+}
+.cat-label { font-size: 11px; font-weight: 700; line-height: 1.2; }
+.cat-count { font-size: 10px; margin-top: 2px; }
+
+/* ── GUIDELINE CARDS ── */
+.g-card {
+  background: var(--card); margin: 6px 12px;
+  border-radius: 11px; border: 1.5px solid var(--border);
+  overflow: hidden; cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04); transition: box-shadow .15s;
+}
+.g-stripe { height: 4px; }
+.g-body { padding: 11px 13px; }
+.g-title { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: 4px; }
+.g-summary { font-size: 12px; color: var(--text-mid); line-height: 1.4; margin-bottom: 8px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.pill { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.02em; white-space: nowrap; }
+.tag  { font-size: 10px; color: var(--text-soft); background: var(--surface); border-radius: 3px; padding: 2px 6px; }
+.badge-overdue { background: var(--red-light);  color: var(--red);   }
+.badge-soon    { background: var(--amber-light); color: var(--amber); }
+.badge-ok      { background: var(--green-light); color: var(--green); }
+mark { background: var(--highlight); color: var(--text); border-radius: 2px; padding: 0 1px; }
+
+/* ── DETAIL ── */
+.detail-header { padding: 14px 14px 18px; }
+.detail-title  { font-size: 19px; font-weight: 800; color: #fff; line-height: 1.2; margin-top: 4px; letter-spacing: -0.02em; }
+.detail-cat    { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 6px; }
+.detail-body   { padding: 14px; }
+.meta-box { background: var(--surface); border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; border: 1px solid var(--border); }
+.meta-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; }
+.meta-row:last-child { margin-bottom: 0; }
+.meta-key { color: var(--text-soft); font-weight: 600; }
+.meta-val { color: var(--text); font-weight: 600; text-align: right; }
+.summary-box { background: var(--teal-light); border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; border: 1px solid var(--teal-mid); }
+.summary-eyebrow { font-size: 10px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.summary-text { font-size: 13px; color: var(--text); line-height: 1.55; }
+.action-btn {
+  display: block; width: 100%; padding: 13px; border-radius: 10px;
+  text-align: center; font-weight: 700; font-size: 14px;
+  text-decoration: none; border: none; cursor: pointer; margin-bottom: 8px;
+  font-family: inherit;
+}
+.action-primary   { background: var(--teal);      color: #fff; }
+.action-secondary { background: var(--teal-light); color: var(--teal); border: 1.5px solid var(--teal-mid); }
+
+/* ── PDF OVERLAY ── */
+.pdf-overlay {
+  position: fixed; inset: 0; z-index: 999;
+  background: #111; display: flex; flex-direction: column;
+}
+.pdf-toolbar {
+  background: var(--navy); color: #fff;
+  padding: calc(10px + var(--safe-top)) 14px 10px;
+  display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+}
+.pdf-toolbar-title { font-size: 14px; font-weight: 700; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pdf-close { background: rgba(255,255,255,0.15); border: none; color: #fff; border-radius: 20px; padding: 5px 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.pdf-frame { flex: 1; width: 100%; border: none; }
+.pdf-fallback { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; text-align: center; color: #ccc; }
+.pdf-fallback-icon { font-size: 48px; margin-bottom: 16px; }
+.pdf-fallback-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.pdf-fallback-sub { font-size: 13px; line-height: 1.6; margin-bottom: 24px; }
+.pdf-fallback-btn { background: var(--teal); color: #fff; border: none; border-radius: 10px; padding: 13px 28px; font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
+
+/* ── REVIEW ── */
+.review-card { background: var(--card); border-radius: 10px; margin-bottom: 8px; padding: 12px 13px; border: 1.5px solid var(--border); }
+.review-card.overdue { border-color: #ef9a9a; }
+.review-card.soon    { border-color: #ffe082; }
+.review-actions { display: flex; gap: 7px; margin-top: 9px; flex-wrap: wrap; }
+
+/* ── SETUP ── */
+.setup-screen { padding: 20px 16px; }
+.setup-card { background: var(--card); border-radius: 14px; border: 1.5px solid var(--border); padding: 20px; margin-bottom: 16px; }
+.setup-step { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.setup-step:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.step-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.step-body { font-size: 12px; color: var(--text-mid); line-height: 1.6; }
+.step-body a { color: var(--teal); }
+.step-body strong { color: var(--text); }
+.copy-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-top: 8px; font-size: 11px; font-family: 'SF Mono', 'Courier New', monospace; color: var(--navy); line-height: 1.7; white-space: pre-wrap; word-break: break-all; }
+.config-section { background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+.config-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+label { display: block; font-size: 11px; font-weight: 600; color: var(--text-mid); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+input[type=text], input[type=url] {
+  width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 13px; color: var(--text); background: var(--surface); outline: none; margin-bottom: 10px;
+}
+input:focus { border-color: var(--teal); background: #fff; }
+
+/* ── BUTTONS ── */
+.btn-primary { width: 100%; padding: 13px; background: var(--teal); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.btn-sm { padding: 6px 10px; font-size: 11px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-mid); cursor: pointer; font-weight: 600; font-family: inherit; }
+
+/* ── MISC ── */
+.body { padding-bottom: calc(80px + var(--safe-bottom)); }
+.empty { text-align: center; padding: 48px 24px; color: var(--text-soft); }
+.empty-icon { font-size: 40px; margin-bottom: 10px; }
+.empty-title { font-size: 15px; font-weight: 700; color: var(--text-mid); margin-bottom: 6px; }
+.empty-sub { font-size: 13px; line-height: 1.5; }
+.spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--teal); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 10px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast { position: fixed; bottom: calc(80px + var(--safe-bottom)); left: 50%; transform: translateX(-50%); padding: 9px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #fff; z-index: 998; box-shadow: 0 4px 16px rgba(0,0,0,0.2); white-space: nowrap; transition: opacity .3s; pointer-events: none; }
+.toast.ok  { background: var(--teal); }
+.toast.err { background: var(--red);  }
+.toast.hidden { opacity: 0; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" class="toast hidden"></div>
+
+<div id="pdf-overlay" class="pdf-overlay" style="display:none">
+  <div class="pdf-toolbar">
+    <div class="pdf-toolbar-title" id="pdf-title"></div>
+    <button class="pdf-close" onclick="closePDF()">✕ Close</button>
+  </div>
+  <div id="pdf-content" style="flex:1;display:flex;flex-direction:column;"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  STORAGE
+// ═══════════════════════════════════════════
+const LS_CONFIG = 'gstt-config-v2';
+const LS_CACHE  = 'gstt-cache-v2';
+const LS_REVIEW = 'gstt-review-v2';
+
+const getConfig  = () => { try { return JSON.parse(localStorage.getItem(LS_CONFIG))||{}; }  catch { return {}; } };
+const setConfig  = c  => localStorage.setItem(LS_CONFIG, JSON.stringify(c));
+const getCache   = () => { try { return JSON.parse(localStorage.getItem(LS_CACHE))||null; } catch { return null; } };
+const setCache   = d  => localStorage.setItem(LS_CACHE, JSON.stringify({data:d,ts:Date.now()}));
+const getReviews = () => { try { return JSON.parse(localStorage.getItem(LS_REVIEW))||{}; }  catch { return {}; } };
+const setReviews = r  => localStorage.setItem(LS_REVIEW, JSON.stringify(r));
+
+// ═══════════════════════════════════════════
+//  CATEGORIES
+// ═══════════════════════════════════════════
+const CATEGORIES = [
+  { id:'airway',      label:'Airway Management',        icon:'🫁', color:'#1a6b8a' },
+  { id:'cardiac',     label:'Cardiac / Cardiothoracic', icon:'🫀', color:'#c0392b' },
+  { id:'regional',    label:'Regional Anaesthesia',     icon:'💉', color:'#7b3fa0' },
+  { id:'obstetric',   label:'Obstetric Anaesthesia',    icon:'🤱', color:'#b07d2e' },
+  { id:'paediatric',  label:'Paediatric Anaesthesia',   icon:'👶', color:'#2e7d4f' },
+  { id:'critical',    label:'Critical Care / ICU',      icon:'🏥', color:'#1565c0' },
+  { id:'pain',        label:'Acute Pain',               icon:'⚡', color:'#e65100' },
+  { id:'drugs',       label:'Drugs & Infusions',        icon:'💊', color:'#00695c' },
+  { id:'antibiotics', label:'Antibiotic Prophylaxis',   icon:'🦠', color:'#558b2f' },
+  { id:'diabetes',    label:'Peri-op Diabetes',         icon:'🩸', color:'#6a1b9a' },
+  { id:'equipment',   label:'Equipment & Safety',       icon:'🔧', color:'#4a4a6a' },
+  { id:'emergency',   label:'Emergency Protocols',      icon:'🚨', color:'#b71c1c' },
+  { id:'consent',     label:'Consent & Pre-op',         icon:'📋', color:'#37474f' },
+  { id:'other',       label:'Other',                    icon:'📄', color:'#546e7a' },
+];
+const CAT = Object.fromEntries(CATEGORIES.map(c=>[c.id,c]));
+
+// ═══════════════════════════════════════════
+//  REVIEW
+// ═══════════════════════════════════════════
+const REVIEW_DAYS = 30;
+const daysSince = iso => !iso ? 999 : Math.floor((Date.now()-new Date(iso).getTime())/86400000);
+function reviewStatus(g) {
+  const r=getReviews(); const d=daysSince(r[g.id]||g.addedAt);
+  return d>=REVIEW_DAYS?'overdue':d>=REVIEW_DAYS-7?'soon':'ok';
+}
+function markReviewed(id){ const r=getReviews(); r[id]=new Date().toISOString(); setReviews(r); }
+
+// ═══════════════════════════════════════════
+//  SEARCH — scores each guideline against query
+// ═══════════════════════════════════════════
+function scoreGuideline(g, terms) {
+  if(!terms.length) return 1;
+  let score = 0;
+  const title   = g.title.toLowerCase();
+  const summary = (g.summary||'').toLowerCase();
+  const tags    = g.tags.map(t=>t.toLowerCase()).join(' ');
+  const source  = (g.source||'').toLowerCase();
+  const cat     = (CAT[g.categoryId]?.label||'').toLowerCase();
+  for(const t of terms){
+    if(title.includes(t))   score += 10;
+    if(tags.includes(t))    score += 6;
+    if(summary.includes(t)) score += 3;
+    if(source.includes(t))  score += 2;
+    if(cat.includes(t))     score += 1;
+  }
+  return score;
+}
+
+// Highlight matched terms in a string — returns safe HTML
+function highlight(str, terms) {
+  if(!str||!terms.length) return escHtml(str||'');
+  let result = escHtml(str);
+  terms.forEach(t => {
+    const re = new RegExp(escRegex(t), 'gi');
+    result = result.replace(re, m=>`<mark>${m}</mark>`);
+  });
+  return result;
+}
+function escRegex(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+
+// ═══════════════════════════════════════════
+//  GOOGLE DRIVE URL HELPERS
+// ═══════════════════════════════════════════
+function toDriveEmbedUrl(url){
+  if(!url) return null;
+  if(url.includes('/preview')||url.includes('export=download')) return url;
+  const m=url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if(m) return `https://drive.google.com/file/d/${m[1]}/preview`;
+  const m2=url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if(m2) return `https://drive.google.com/file/d/${m2[1]}/preview`;
+  return url;
+}
+function toDriveDirectUrl(url){
+  if(!url) return null;
+  const m=url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if(m) return `https://drive.google.com/uc?export=download&id=${m[1]}`;
+  const m2=url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if(m2) return `https://drive.google.com/uc?export=download&id=${m2[1]}`;
+  return url;
+}
+
+// ═══════════════════════════════════════════
+//  CSV PARSE
+// ═══════════════════════════════════════════
+async function fetchSheet(csvUrl){
+  const r=await fetch(csvUrl+'&cb='+Date.now());
+  if(!r.ok) throw new Error('Sheet fetch failed');
+  return parseCSV(await r.text());
+}
+function parseCSVRow(line){
+  const res=[]; let cur=''; let inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){ if(inQ&&line[i+1]==='"'){cur+='"';i++;} else inQ=!inQ; }
+    else if(ch===','&&!inQ){ res.push(cur);cur=''; }
+    else cur+=ch;
+  }
+  res.push(cur); return res;
+}
+function parseCSV(text){
+  const lines=text.trim().split('\n');
+  if(lines.length<2) return [];
+  const headers=parseCSVRow(lines[0]).map(h=>h.trim().toLowerCase().replace(/\s+/g,'_'));
+  return lines.slice(1).map(line=>{
+    const vals=parseCSVRow(line); const o={};
+    headers.forEach((h,i)=>{ o[h]=(vals[i]||'').trim(); });
+    return {
+      id:         o.id||Math.random().toString(36).slice(2),
+      title:      o.title||'',
+      categoryId: o.category_id||o.category||'other',
+      summary:    o.summary||o.description||'',
+      version:    o.version||'',
+      source:     o.source||'',
+      pdfUrl:     o.pdf_url||o.url||'',
+      tags:       (o.tags||o.keywords||'').split(',').map(t=>t.trim()).filter(Boolean),
+      addedAt:    o.added_date||o.date_added||new Date().toISOString(),
+    };
+  }).filter(g=>g.title);
+}
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+let S = {
+  view: 'browse',
+  guidelines: [], loading: false,
+  synced: null, syncErr: false,
+  selectedId: null, selectedCat: null,
+  search: '', searchTerms: [],
+};
+function setState(patch){ Object.assign(S,patch); render(); }
+
+function setSearch(val){
+  S.search = val;
+  S.searchTerms = val.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  render();
+}
+
+// ═══════════════════════════════════════════
+//  PDF VIEWER
+// ═══════════════════════════════════════════
+function openPDF(url,title){
+  const embedUrl=toDriveEmbedUrl(url);
+  const directUrl=toDriveDirectUrl(url);
+  document.getElementById('pdf-title').textContent=title||'Guideline PDF';
+  document.getElementById('pdf-content').innerHTML=`
+    <iframe id="pdf-frame" class="pdf-frame" src="${escHtml(embedUrl)}"
+      onload="handleFrameLoad()" onerror="showPDFFallback('${escHtml(directUrl)}')"></iframe>
+    <div id="pdf-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#111;color:#ccc;flex-direction:column;gap:10px">
+      <div class="spinner" style="border-top-color:#fff"></div><div style="font-size:13px">Loading PDF…</div>
+    </div>`;
+  document.getElementById('pdf-overlay').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function handleFrameLoad(){ const l=document.getElementById('pdf-loading'); if(l) l.style.display='none'; }
+function showPDFFallback(directUrl){
+  document.getElementById('pdf-content').innerHTML=`
+    <div class="pdf-fallback">
+      <div class="pdf-fallback-icon">📄</div>
+      <div class="pdf-fallback-title">PDF ready to open</div>
+      <div class="pdf-fallback-sub">This PDF couldn't load inline. Tap below to open it directly.</div>
+      <a href="${escHtml(directUrl)}" target="_blank" rel="noopener" class="pdf-fallback-btn">Open PDF</a>
+    </div>`;
+}
+function closePDF(){ document.getElementById('pdf-overlay').style.display='none'; document.body.style.overflow=''; }
+
+// ═══════════════════════════════════════════
+//  SYNC
+// ═══════════════════════════════════════════
+async function init(){
+  const cfg=getConfig();
+  if(!cfg.csvUrl){ setState({view:'setup'}); return; }
+  const cached=getCache();
+  if(cached) setState({guidelines:cached.data,synced:new Date(cached.ts).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});
+  else setState({loading:true});
+  syncSheet(cfg.csvUrl);
+}
+async function syncSheet(url){
+  try {
+    const data=await fetchSheet(url);
+    setCache(data);
+    setState({guidelines:data,synced:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),loading:false,syncErr:false});
+  } catch { setState({loading:false,syncErr:true}); }
+}
+
+// ═══════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════
+let toastTimer;
+function showToast(msg,type='ok'){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className=`toast ${type}`;
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.className='toast hidden',2800);
+}
+
+// ═══════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════
+function render(){
+  if(S.view==='setup'){ document.getElementById('app').innerHTML=buildSetup(); attachEvents(); return; }
+
+  const terms = S.searchTerms;
+  const overdue = S.guidelines.filter(g=>reviewStatus(g)==='overdue');
+  const soon    = S.guidelines.filter(g=>reviewStatus(g)==='soon');
+
+  // Filter + score
+  let filtered = S.guidelines.filter(g=>{
+    if(S.selectedCat && g.categoryId!==S.selectedCat) return false;
+    if(!terms.length) return true;
+    return scoreGuideline(g,terms) > 0;
+  });
+  if(terms.length){
+    filtered = filtered
+      .map(g=>({g, score:scoreGuideline(g,terms)}))
+      .sort((a,b)=>b.score-a.score)
+      .map(x=>x.g);
+  }
+
+  const isDetail=S.view==='guideline';
+  const headerHtml=isDetail
+    ?`<button class="back-btn" onclick="setState({view:'browse',selectedId:null})">← Back to Library</button>`
+    :`<div class="header-title">GSTT Anaesthetics Guidelines</div><div class="header-sub">${S.guidelines.length} guideline${S.guidelines.length!==1?'s':''} · Peri-operative Library</div>`;
+
+  const syncBar=!isDetail
+    ?`<div class="sync-bar${S.syncErr?' error':''}">${S.syncErr?'⚠ Could not sync — showing cached data':S.synced?`Last synced ${S.synced}`:'Syncing…'}</div>`
+    :'';
+
+  const nav=!isDetail?`<div class="nav">
+    ${[['browse','📚','Browse'],['search','🔍','Search'],['review','📅',`Review${overdue.length?` (${overdue.length})`:'`'}`],['setup','⚙️','Settings']]
+      .map(([v,i,l])=>`<button class="nav-btn${S.view===v?' active':''}" onclick="setState({view:'${v}'})">${i}<br><span>${l}</span></button>`).join('')}
+  </div>`:'';
+
+  let body='';
+  if(S.view==='guideline') body=buildDetail();
+  else if(S.view==='search') body=buildSearch(filtered,terms);
+  else if(S.view==='review') body=buildReview(overdue,soon);
+  else body=buildBrowse(overdue,soon);
+
+  document.getElementById('app').innerHTML=
+    `<div class="header">${headerHtml}</div>${syncBar}${nav}<div class="body">${S.loading&&!S.guidelines.length?buildLoading():body}</div>`;
+  attachEvents();
+}
+
+// ── Browse (category grid only) ─────────────────────────────────────
+function buildBrowse(overdue,soon){
+  let h='';
+
+  if(overdue.length||soon.length){
+    const t=overdue.length?'overdue':'soon';
+    const msg=overdue.length
+      ?`⚠️ ${overdue.length} guideline${overdue.length>1?'s':''} overdue for review`
+      :`🕐 ${soon.length} guideline${soon.length>1?'s':''} due for review soon`;
+    h+=`<div class="alert-banner ${t}" onclick="setState({view:'review'})">
+      <div class="alert-title" style="color:${t==='overdue'?'var(--red)':'var(--amber)'}">${msg}</div>
+      <div class="alert-sub">Tap to review →</div>
+    </div>`;
+  }
+
+  h+=`<div class="section-label">Browse by category</div><div class="cat-grid">`;
+  CATEGORIES.forEach(c=>{
+    const count=S.guidelines.filter(g=>g.categoryId===c.id).length;
+    h+=`<div class="cat-card" style="border-color:${c.color}33;background:var(--card)" onclick="openCategory('${c.id}')">
+      <span style="font-size:22px">${c.icon}</span>
+      <div>
+        <div class="cat-label" style="color:${c.color}">${c.label}</div>
+        <div class="cat-count" style="color:var(--text-soft)">${count} guideline${count!==1?'s':''}</div>
+      </div>
+    </div>`;
+  });
+  h+=`</div>`;
+
+  if(!S.guidelines.length&&!S.loading)
+    h+=`<div class="empty"><div class="empty-icon">📚</div><div class="empty-title">Library is empty</div><div class="empty-sub">Add guidelines to your Google Sheet and they'll appear here automatically.</div></div>`;
+
+  return h;
+}
+
+// ── Search view ─────────────────────────────────────────────────────
+function buildSearch(filtered, terms){
+  const activeCat = S.selectedCat;
+  const hasQuery  = terms.length > 0;
+  const showingAll = !hasQuery && !activeCat;
+
+  // Category filter chips
+  const chips = `<div class="filter-row">
+    <div class="filter-chip${!activeCat?' active':''}" style="${!activeCat?'background:var(--teal);':''}color:${!activeCat?'#fff':'var(--text-mid)'}" onclick="clearCat()">All</div>
+    ${CATEGORIES.map(c=>{
+      const active=activeCat===c.id;
+      return `<div class="filter-chip${active?' active':''}"
+        style="${active?`background:${c.color};`:''}color:${active?'#fff':'var(--text-mid)'}"
+        onclick="toggleCat('${c.id}')">${c.icon} ${c.label}</div>`;
+    }).join('')}
+  </div>`;
+
+  const resultMeta = (hasQuery||activeCat)
+    ? `<div class="search-meta">
+        <span>${filtered.length} result${filtered.length!==1?'s':''}</span>
+        ${hasQuery||activeCat?`<a onclick="clearSearch()">Clear all</a>`:''}
+      </div>`
+    : '';
+
+  const searchBar=`<div class="search-wrap">
+    <div class="search-row">
+      <input class="search-input" id="search-input" type="search" autocomplete="off" autocorrect="off" spellcheck="false"
+        placeholder="Search guidelines…" value="${escHtml(S.search)}">
+      ${S.search?`<button class="search-clear" onclick="clearSearch()">✕</button>`:''}
+    </div>
+    ${chips}
+    ${resultMeta}
+  </div>`;
+
+  let results='';
+  if(showingAll){
+    // Show all guidelines sorted alphabetically
+    const sorted=[...S.guidelines].sort((a,b)=>a.title.localeCompare(b.title));
+    results = sorted.length
+      ? `<div class="section-label">All guidelines (A–Z)</div>`+sorted.map(g=>buildGCard(g,[])).join('')
+      : `<div class="empty"><div class="empty-icon">📭</div><div class="empty-title">No guidelines yet</div></div>`;
+  } else if(filtered.length===0){
+    results=`<div class="empty">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">No results</div>
+      <div class="empty-sub">Try different keywords or clear the category filter.</div>
+    </div>`;
+  } else {
+    const label = hasQuery
+      ? `<div class="section-label">${filtered.length} result${filtered.length!==1?'s':''} — best match first</div>`
+      : `<div class="section-label">${CAT[activeCat]?.label||''} <span style="font-weight:400;color:var(--text-soft)">${filtered.length} guideline${filtered.length!==1?'s':''}</span></div>`;
+    results = label + filtered.map(g=>buildGCard(g,terms)).join('');
+  }
+
+  return searchBar + `<div style="padding-bottom:8px">${results}</div>`;
+}
+
+function buildGCard(g, terms){
+  const cat=CAT[g.categoryId]||CAT.other;
+  const status=reviewStatus(g);
+  const badge=status!=='ok'?`<span class="pill badge-${status==='overdue'?'overdue':'soon'}">${status==='overdue'?'Review overdue':'Due soon'}</span>`:'';
+
+  // Highlighted fields
+  const titleHtml   = highlight(g.title, terms);
+  const summaryHtml = g.summary ? highlight(g.summary, terms) : '';
+  const tagsHtml    = g.tags.map(t=>`<span class="tag">${highlight('#'+t,terms)}</span>`).join('');
+
+  return `<div class="g-card" onclick="openGuideline('${g.id}')">
+    <div class="g-stripe" style="background:${cat.color}"></div>
+    <div class="g-body">
+      <div class="g-title">${titleHtml}</div>
+      ${summaryHtml?`<div class="g-summary">${summaryHtml}</div>`:''}
+      <div class="pill-row">
+        <span class="pill" style="background:${cat.color}22;color:${cat.color};border:1px solid ${cat.color}44">${cat.icon} ${cat.label}</span>
+        ${g.version?`<span class="pill" style="background:#eee;color:#555;border:1px solid #ddd">v${escHtml(g.version)}</span>`:''}
+        ${badge}
+      </div>
+      ${tagsHtml?`<div class="pill-row" style="margin-top:5px">${tagsHtml}</div>`:''}
+    </div>
+  </div>`;
+}
+
+// ── Category view (tapped from Browse) ─────────────────────────────
+function openCategory(catId){
+  S.selectedCat=catId; S.search=''; S.searchTerms=[];
+  setState({view:'search'});
+}
+function toggleCat(id){ S.selectedCat=S.selectedCat===id?null:id; render(); }
+function clearCat(){ S.selectedCat=null; render(); }
+function clearSearch(){ S.search=''; S.searchTerms=[]; S.selectedCat=null; render(); }
+
+// ── Detail ──────────────────────────────────────────────────────────
+function buildDetail(){
+  const g=S.guidelines.find(x=>x.id===S.selectedId);
+  if(!g) return '<div class="empty"><div class="empty-title">Not found</div></div>';
+  const cat=CAT[g.categoryId]||CAT.other;
+  const status=reviewStatus(g);
+  const r=getReviews(); const last=r[g.id]||g.addedAt; const days=daysSince(last);
+
+  return `
+    <div class="detail-header" style="background:linear-gradient(150deg,${cat.color}dd,${cat.color})">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+      <div class="detail-title">${escHtml(g.title)}</div>
+      <div class="detail-cat">${cat.icon} ${cat.label}</div>
+    </div>
+    <div class="detail-body">
+      <div class="meta-box">
+        <div class="meta-row"><span class="meta-key">Review status</span><span class="meta-val"><span class="pill badge-${status==='ok'?'ok':status==='overdue'?'overdue':'soon'}">${status==='ok'?'Up to date':status==='overdue'?'Overdue':'Due soon'}</span></span></div>
+        <div class="meta-row"><span class="meta-key">Last reviewed</span><span class="meta-val">${days===0?'Today':`${days} day${days!==1?'s':''} ago`}</span></div>
+        ${g.version?`<div class="meta-row"><span class="meta-key">Version</span><span class="meta-val">${escHtml(g.version)}</span></div>`:''}
+        ${g.source?`<div class="meta-row"><span class="meta-key">Source</span><span class="meta-val">${escHtml(g.source)}</span></div>`:''}
+      </div>
+      ${g.summary?`<div class="summary-box"><div class="summary-eyebrow">Summary</div><div class="summary-text">${escHtml(g.summary)}</div></div>`:''}
+      ${g.tags.length?`<div style="margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Keywords</div><div class="pill-row">${g.tags.map(t=>`<span class="tag">#${escHtml(t)}</span>`).join('')}</div></div>`:''}
+      ${g.pdfUrl
+        ?`<button class="action-btn action-primary" onclick="openPDF('${escHtml(g.pdfUrl)}','${escHtml(g.title)}')">📄 Open PDF</button>`
+        :`<div style="background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center;color:var(--text-soft);font-size:13px;margin-bottom:8px">No PDF linked for this guideline</div>`
+      }
+      <button class="action-btn action-secondary" onclick="doMarkReviewed('${g.id}')">✅ Mark as reviewed today</button>
+    </div>`;
+}
+
+// ── Review ──────────────────────────────────────────────────────────
+function buildReview(overdue,soon){
+  const needs=[...overdue,...soon];
+  return `<div style="padding:14px">
+    <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-0.02em">Monthly Review</div>
+    <div style="font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">Check each guideline against the current version and mark it reviewed. All guidelines should be checked every 30 days.</div>
+    ${!needs.length
+      ?`<div class="empty"><div class="empty-icon">✅</div><div class="empty-title" style="color:var(--green)">All guidelines up to date</div></div>`
+      :needs.map(g=>{
+          const cat=CAT[g.categoryId]||CAT.other;
+          const r=getReviews(); const days=daysSince(r[g.id]||g.addedAt); const st=reviewStatus(g);
+          return `<div class="review-card ${st}">
+            <div style="font-weight:700;font-size:13px">${escHtml(g.title)}</div>
+            <div style="font-size:11px;color:var(--text-soft);margin-top:2px">${cat.icon} ${cat.label} · ${days} day${days!==1?'s':''} since last review</div>
+            <div class="review-actions">
+              <button class="btn-sm" onclick="doMarkReviewed('${g.id}')">✅ Mark reviewed</button>
+              ${g.pdfUrl?`<button class="btn-sm" onclick="openPDF('${escHtml(g.pdfUrl)}','${escHtml(g.title)}')">📄 Open PDF</button>`:''}
+              <button class="btn-sm" onclick="openGuideline('${g.id}')">View →</button>
+            </div>
+          </div>`;
+        }).join('')
+    }
+  </div>`;
+}
+
+// ── Setup ───────────────────────────────────────────────────────────
+function buildSetup(){
+  const cfg=getConfig();
+  return `
+  <div class="header">
+    <div class="header-title">GSTT Anaesthetics Guidelines</div>
+    <div class="header-sub">${cfg.csvUrl?'Settings':'Initial setup'}</div>
+  </div>
+  <div class="setup-screen">
+    <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-0.02em">Setup — Google Drive + Sheets</div>
+    <div style="font-size:12px;color:var(--text-mid);margin-bottom:16px;line-height:1.5">PDFs live in a shared Google Drive folder. The guidelines list lives in a Google Sheet. You manage both — everyone's app updates automatically.</div>
+
+    <div class="setup-card">
+      <div class="setup-step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Create a shared Google Drive folder</div>
+          <div class="step-body">Go to <a href="https://drive.google.com" target="_blank">drive.google.com</a> and create a folder called <strong>GSTT Anaesthetics Guidelines</strong>.<br><br>
+          Right-click → <strong>Share → Change to anyone with the link → Viewer</strong>.<br><br>
+          Upload your PDFs here. When replacing a PDF use the same filename so links keep working.</div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Get a shareable link for each PDF</div>
+          <div class="step-body">Right-click each PDF → <strong>Share → Copy link</strong>. It will look like:<br>
+          <div class="copy-block">https://drive.google.com/file/d/ABC123xyz/view?usp=sharing</div>
+          The app converts these automatically into inline viewer links.</div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Create a Google Sheet with these exact headers in row 1</div>
+          <div class="step-body"><div class="copy-block">id,title,category_id,summary,version,source,pdf_url,tags,added_date</div>
+          Example row:<br>
+          <div class="copy-block">G001,Difficult Airway Algorithm,airway,"Management of unanticipated difficult intubation",3.2,DAS / GSTT,https://drive.google.com/file/d/ABC123/view,"RSI,CICO,intubation",2024-01-15</div>
+          Valid <strong>category_id</strong> values:<br>
+          <div class="copy-block">airway · cardiac · regional · obstetric · paediatric · critical · pain · drugs · antibiotics · diabetes · equipment · emergency · consent · other</div></div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Publish the Sheet as CSV</div>
+          <div class="step-body"><strong>File → Share → Publish to web</strong><br>
+          Select <strong>Sheet1</strong> and <strong>Comma-separated values (.csv)</strong> → <strong>Publish</strong>.<br>
+          Copy the URL — it looks like:<br>
+          <div class="copy-block">https://docs.google.com/spreadsheets/d/…/pub?gid=0&single=true&output=csv</div></div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">5</div>
+        <div>
+          <div class="step-title">Paste the CSV URL below and connect</div>
+          <div class="step-body">The app caches guidelines locally and re-syncs every time it opens.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <div class="config-title">⚙️ Connection</div>
+      <label>Google Sheet CSV URL</label>
+      <input type="url" id="cfg-url" placeholder="https://docs.google.com/spreadsheets/d/…" value="${escHtml(cfg.csvUrl||'')}">
+      <button class="btn-primary" onclick="saveConfig()">Connect & Load Guidelines</button>
+      ${cfg.csvUrl?`<button style="margin-top:8px;width:100%;padding:11px;background:none;border:1.5px solid var(--border);border-radius:10px;color:var(--text-mid);font-size:14px;cursor:pointer;font-family:inherit" onclick="setState({view:'browse'})">← Back to app</button>`:''}
+    </div>
+
+    <div style="background:var(--teal-light);border:1.5px solid var(--teal-mid);border-radius:12px;padding:14px;font-size:12px;color:var(--text-mid);line-height:1.6">
+      💡 <strong style="color:var(--teal)">Sharing with colleagues:</strong><br>
+      Save this HTML file to the same Google Drive folder. Share the link — colleagues open it in Safari or Chrome and tap <strong>Add to Home Screen</strong>. It works like a native app. PDF and guideline updates are instant for everyone.
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+//  EVENTS & HELPERS
+// ═══════════════════════════════════════════
+function attachEvents(){
+  const si=document.getElementById('search-input');
+  if(si){
+    si.addEventListener('input',e=>setSearch(e.target.value));
+    si.addEventListener('focus',e=>e.target.select());
+    // Auto-focus when switching to search tab
+    if(S.view==='search' && !S.search) setTimeout(()=>si.focus(),50);
+  }
+  const cfgUrl=document.getElementById('cfg-url');
+  if(cfgUrl) cfgUrl.addEventListener('keydown',e=>{ if(e.key==='Enter') saveConfig(); });
+}
+
+function openGuideline(id){ setState({selectedId:id,view:'guideline'}); }
+function goBack(){ setState({view: S.selectedCat||S.search ? 'search' : 'browse', selectedId:null}); }
+function doMarkReviewed(id){ markReviewed(id); showToast('Marked as reviewed ✓'); render(); }
+function saveConfig(){
+  const url=document.getElementById('cfg-url')?.value?.trim();
+  if(!url){ showToast('Please paste a CSV URL','err'); return; }
+  setConfig({csvUrl:url});
+  setState({view:'browse',loading:true,guidelines:[],synced:null,syncErr:false});
+  syncSheet(url);
+}
+function buildLoading(){ return `<div class="empty"><div class="spinner"></div><div style="margin-top:4px">Loading guidelines…</div></div>`; }
+function escHtml(s){ if(!s)return''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ═══════════════════════════════════════════
+//  GO
+// ═══════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
