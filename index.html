@@ -420,6 +420,41 @@ function closePDF() { document.getElementById('pdf-overlay').style.display='none
 //  SYNC
 // ═══════════════════════════════════════════════════════════════
 async function init() {
+  // Register service worker for automatic updates
+  if ('serviceWorker' in navigator) {
+    try {
+      const swCode = `
+        const CACHE = 'gstt-v1';
+        self.addEventListener('install', e => {
+          self.skipWaiting();
+        });
+        self.addEventListener('activate', e => {
+          e.waitUntil(
+            caches.keys().then(keys =>
+              Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+            ).then(() => self.clients.claim())
+          );
+        });
+        self.addEventListener('fetch', e => {
+          // Only cache same-origin requests (the app HTML itself)
+          if (!e.request.url.startsWith(self.location.origin)) return;
+          e.respondWith(
+            fetch(e.request).then(response => {
+              const clone = response.clone();
+              caches.open(CACHE).then(cache => cache.put(e.request, clone));
+              return response;
+            }).catch(() => caches.match(e.request))
+          );
+        });
+      `;
+      const blob = new Blob([swCode], {type: 'application/javascript'});
+      const swUrl = URL.createObjectURL(blob);
+      const reg = await navigator.serviceWorker.register(swUrl);
+      // Check for updates every time the app opens
+      reg.update();
+    } catch(e) {}
+  }
+
   // Inject PWA manifest blob
   try {
     const mdata = JSON.parse(document.getElementById('manifest-data').textContent);
