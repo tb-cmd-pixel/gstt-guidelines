@@ -548,16 +548,6 @@ function render() {
 
 function buildBrowse(overdue, soon) {
   let h = '';
-  if (overdue.length||soon.length) {
-    const t = overdue.length?'overdue':'soon';
-    const msg = overdue.length
-      ? `&#x26A0;&#xFE0F; ${overdue.length} guideline${overdue.length>1?'s':''} overdue for review`
-      : `&#x1F550; ${soon.length} guideline${soon.length>1?'s':''} due for review soon`;
-    h += `<div class="alert-banner ${t}" onclick="setState({view:'review'})">
-      <div style="font-weight:700;font-size:13px;color:${t==='overdue'?'var(--red)':'var(--amber)'}">${msg}</div>
-      <div style="font-size:11px;color:var(--text-mid);margin-top:2px">Tap to review &rarr;</div>
-    </div>`;
-  }
   h += `<div class="section-label">Browse by category</div><div class="cat-grid">`;
   CATS.forEach(c => {
     const count = S.guidelines.filter(g=>g.categoryId===c.id).length;
@@ -658,13 +648,12 @@ function buildDetail() {
           <span class="meta-val"><span class="pill badge-${status==='ok'?'ok':status==='overdue'?'overdue':'soon'}">${statusLabel}</span></span>
         </div>
         <div class="meta-row">
-          <span class="meta-key">Last reviewed</span>
+          <span class="meta-key">Review date</span>
           <span class="meta-val">${g.reviewDate ? formatDate(g.reviewDate) : 'Not recorded'}</span>
         </div>
         ${g.reviewDate && status!=='ok'?`<div class="meta-row"><span class="meta-key">Days overdue</span><span class="meta-val" style="color:var(--red)">${days - REVIEW_DAYS} days</span></div>`:''}
         ${g.version?`<div class="meta-row"><span class="meta-key">Version</span><span class="meta-val">${escHtml(g.version)}</span></div>`:''}
         ${g.source?`<div class="meta-row"><span class="meta-key">Source</span><span class="meta-val">${escHtml(g.source)}</span></div>`:''}
-        ${g.addedAt?`<div class="meta-row"><span class="meta-key">Date added</span><span class="meta-val">${formatDate(g.addedAt)}</span></div>`:''}
       </div>
       ${g.summary?`<div class="summary-box"><div class="summary-eyebrow">Summary</div><div class="summary-text">${escHtml(g.summary)}</div></div>`:''}
       ${g.tags.length?`<div style="margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Keywords</div><div class="pill-row">${g.tags.map(t=>`<span class="tag">#${escHtml(t)}</span>`).join('')}</div></div>`:''}
@@ -679,7 +668,7 @@ function buildReview(overdue, soon) {
   const needs = [...overdue, ...soon];
   return `<div style="padding:14px">
     <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-0.02em">Monthly Review</div>
-    <div style="font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">Guidelines with a review date older than 30 days appear here. Update the <strong>review_date</strong> column in your Google Sheet after checking each one.</div>
+    <div style="font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">Guidelines with a review date older than 30 days appear here.</div>
     ${!needs.length
       ?`<div class="empty"><div class="empty-icon">✅</div><div class="empty-title" style="color:var(--green)">All guidelines up to date</div></div>`
       :needs.map(g => {
